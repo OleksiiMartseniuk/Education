@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
+from django.db.backends.base import base
+from .fields import OrderField
 
 
 class Subject(models.Model):
@@ -40,9 +42,14 @@ class Module(models.Model):
                                 on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
+    # орядок будет больше на единицу, чем у предыдущего модуля курса
+    order = OrderField(blank=True, for_fields=['course'])
+
+    class Meta:
+        ordering = ['order']
 
     def __str__(self):
-        return self.title
+        return f'{self.order}. {self.title}'
 
 
 class Content(models.Model):
@@ -63,6 +70,11 @@ class Content(models.Model):
     object_id = models.PositiveIntegerField()
     # поле типа GenericForeignKey, которое обобщает данные из предыду-щих двух
     item = GenericForeignKey('content_type', 'object_id')
+    # порядковые номера объектов будут задаваться в рамках одного модуля
+    order = OrderField(blank=True, for_fields=['module'])
+
+    class Meta:
+        ordering = ['order']
 
 
 class ItemBase(models.Model):
