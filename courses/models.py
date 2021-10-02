@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 
 class Subject(models.Model):
@@ -42,3 +44,16 @@ class Module(models.Model):
     def __str__(self):
         return self.title
 
+
+class Content(models.Model):
+    """Содержание"""
+    modul = models.ForeignKey(Module,
+                            related_name='contents',
+                            on_delete=models.CASCADE)
+    # внешний ключ, ForeignKey, на модель ContentType                        
+    content_type = models.ForeignKey(ContentType,
+                                    on_delete=models.CASCADE)
+    # идентификатор связанного объекта типа PositiveIntegerField                                
+    object_id = models.PositiveIntegerField()
+    # поле типа GenericForeignKey, которое обобщает данные из предыду-щих двух
+    item = GenericForeignKey('content_type', 'object_id')
