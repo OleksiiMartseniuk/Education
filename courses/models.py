@@ -52,8 +52,50 @@ class Content(models.Model):
                             on_delete=models.CASCADE)
     # внешний ключ, ForeignKey, на модель ContentType                        
     content_type = models.ForeignKey(ContentType,
-                                    on_delete=models.CASCADE)
+                                    on_delete=models.CASCADE,
+                                    limit_choices_to={'model__in':(
+                                        'text',
+                                        'video',
+                                        'image',
+                                        'file'
+                                    )})
     # идентификатор связанного объекта типа PositiveIntegerField                                
     object_id = models.PositiveIntegerField()
     # поле типа GenericForeignKey, которое обобщает данные из предыду-щих двух
     item = GenericForeignKey('content_type', 'object_id')
+
+
+class ItemBase(models.Model):
+    """Абстрактный клас"""
+    owner = models.ForeignKey(User,
+                            related_name='%(class)s_related',
+                            on_delete=models.CASCADE)
+    title = models.CharField(max_length=250)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.title
+
+
+class Text(ItemBase):
+    """для текста"""
+    content = models.TextField()
+
+
+class File(ItemBase):
+    """для файлов"""
+    file = models.FileField(upload_to='files')
+
+
+class Image(ItemBase):
+    """для картинок"""
+    file = models.FileField(upload_to='images') 
+
+
+class Video(ItemBase):
+    """для видео"""
+    url = models.URLField()
