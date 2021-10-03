@@ -74,7 +74,7 @@ class CourseModuleUpdateView(TemplateResponseMixin, View):
 
     def dispatch(self, request, pk):
         self.course = get_object_or_404(Course, id=pk, owner=request.user)
-        return super(CourseModuleUpdateView, self).dispatch(request, pk)    
+        return super(CourseModuleUpdateView, self).dispatch(request, pk)
 
     def get(self, request, *args, **kwargs):
         formset = self.get_formset()
@@ -85,7 +85,7 @@ class CourseModuleUpdateView(TemplateResponseMixin, View):
         if formset.is_valid():
             formset.save()
             return redirect('manage_course_list')
-        return self.render_to_response({'course': self.course, 'formset': formset})    
+        return self.render_to_response({'course': self.course,'formset': formset})  
 
 
 class ContentCreateUpdateView(TemplateResponseMixin, View):
@@ -150,12 +150,12 @@ class ContentCreateUpdateView(TemplateResponseMixin, View):
             obj.save()
             if not id:
                 # Создаем новый объект.
-                 Content.objects.create(module=self.module,
-                                       item=obj)
+                Content.objects.create(module=self.module, item=obj)
             return redirect('module_content_list', self.module.id)
 
         return self.render_to_response({'form': form,
                                         'object': self.obj})                     
+
 
 class ContentDeleteView(View):
     

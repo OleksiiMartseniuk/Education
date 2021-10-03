@@ -56,7 +56,7 @@ class Module(models.Model):
 
 class Content(models.Model):
     """Содержание"""
-    modul = models.ForeignKey(Module,
+    module = models.ForeignKey(Module,
                             related_name='contents',
                             on_delete=models.CASCADE)
     # внешний ключ, ForeignKey, на модель ContentType                        
