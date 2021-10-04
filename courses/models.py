@@ -4,6 +4,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db.backends.base import base
 from .fields import OrderField
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
 
 
 class Subject(models.Model):
@@ -97,6 +99,9 @@ class ItemBase(models.Model):
     def __str__(self):
         return self.title
 
+    def render(self):
+        return render_to_string('courses/content/{}.html'.format(
+            self._meta.model_name), {'item': self})
 
 class Text(ItemBase):
     """для текста"""
