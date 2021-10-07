@@ -23,8 +23,8 @@ class Subject(models.Model):
 class Course(models.Model):
     """Курс"""
     owner = models.ForeignKey(User,
-                            related_name='courses_created',
-                            on_delete=models.CASCADE)
+                                related_name='courses_created',
+                                on_delete=models.CASCADE)
     subject = models.ForeignKey(Subject,
                                 related_name='courses',
                                 on_delete=models.CASCADE)
@@ -42,11 +42,12 @@ class Course(models.Model):
     def __str__(self):
         return self.title
 
+
 class Module(models.Model):
     """Модуль"""
     course = models.ForeignKey(Course,
-                                related_name='modules',
-                                on_delete=models.CASCADE)
+                               related_name='modules',
+                               on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     # орядок будет больше на единицу, чем у предыдущего модуля курса
@@ -62,8 +63,8 @@ class Module(models.Model):
 class Content(models.Model):
     """Содержание"""
     module = models.ForeignKey(Module,
-                            related_name='contents',
-                            on_delete=models.CASCADE)
+                                related_name='contents',
+                                on_delete=models.CASCADE)
     # внешний ключ, ForeignKey, на модель ContentType                        
     content_type = models.ForeignKey(ContentType,
                                     on_delete=models.CASCADE,
@@ -102,6 +103,7 @@ class ItemBase(models.Model):
     def render(self):
         return render_to_string('courses/content/{}.html'.format(
             self._meta.model_name), {'item': self})
+
 
 class Text(ItemBase):
     """для текста"""
